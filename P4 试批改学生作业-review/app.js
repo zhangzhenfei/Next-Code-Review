@@ -149,9 +149,28 @@ function multiplePicTpl(pics) {
  * @param {Object} messageData 对象
  */
 function messageTpl(messageData) {
+    /**
+     * zhangzhenfei 批阅：多个变量声明推荐使用省略var方式，减少文件体积，提高解析性能
+     * @example
+     * var user = messageData.user,
+     *     content = messageData.content,
+     *     htmlText = [];
+     */
     var user = messageData.user;
     var content = messageData.content;
     var htmlText = [];
+    /**
+     * zhangzhenfei 批阅：如果是使用数组方式渲染模板，不建议多次push操作数组，影响性能，直接定义使用即可，
+     * 语义更加清晰，看起来和html语法更接近
+     * @example
+     * var htmlText = [
+     *  '<div class="moments-item" data-index="0">',
+     *  '<a class="item-left" href="#">',
+     *  '<img src="' + user.avatar + '" width="42" height="42" alt=""/>'，
+     *  '</a>',
+     *  ...
+     * ]
+     */
     htmlText.push('<div class="moments-item" data-index="0">');
     // 消息用户头像
     htmlText.push('<a class="item-left" href="#">');
@@ -163,6 +182,9 @@ function messageTpl(messageData) {
     htmlText.push('<a href="#" class="item-name">' + user.name + '</a>');
     // 消息内容-文本信息
     htmlText.push('<p class="item-msg">' + content.text + '</p>');
+    /**
+     * zhangzhenfei 批阅：只实现了一个多图片的模板渲染方法，缺少其他三种消息展示
+     */
     // 消息内容-图片列表 （目前只支持多图片消息，需要补充完成其余三种消息展示）
     htmlText.push(multiplePicTpl(content.pics));
     // 消息时间和回复按钮
@@ -192,9 +214,21 @@ function render() {
  * 页面绑定事件函数：bindEvent
  */
 function bindEvent() {
+    /**
+     * zhangzhenfei 批阅：bindEvent就只应该做绑定方法的事情，方法做的事情和方法无关是编程大忌
+     */
     // TODO: 完成页面交互功能
+    /**
+     * zhangzhenfei 批阅：变量缺少注释，难以理解，应该写明是当前弹出点赞/评论框，
+     * 一个页面只允许出现一个，每次点击评论按钮会重新替换
+     */
     var curlikelist = null;
     //toggle功能
+    /**
+     * zhangzhenfei 批阅：
+     * 1. toggle方法没注释，参数没注释，难以理解，代码是写给人看的，不是仅仅实现功能即可，还需要又良好的可维护性
+     * 2. 方法参数命名也应该又意义，fn,fn2是用来干嘛的呢，而且原型方法应该抽出来当做一个原型扩展工具使用
+     */
     $.fn.toggle = function (fn, fn2) {
         var args = arguments, guid = fn.guid || $.guid++, i = 0,
             toggle = function (event) {
@@ -210,7 +244,8 @@ function bindEvent() {
         return this.click(toggle);
     };
     /**
-     * 事件方法里面应该只处理事件的绑定相关逻辑，以下初始化的方法可以抽出来
+     * zhangzhenfei 批阅：
+     * 事件方法里面应该只处理事件的绑定相关逻辑，以下初始化的方法可以抽出来，作为一个initPage()方法
      */
     //添加点赞评论
     $('.item-reply-btn').before("<div class='item-reply-likelist'><span class='item-reply-likelist-like'>点赞</span><span class='item-reply-likelist-comment'>评论</span></div>");
@@ -218,10 +253,17 @@ function bindEvent() {
     $(".page-moments").append('<div class="moments-comment"><input type="text" class="moments-comment-input"><button class="moments-comment-button">评论</button></div>');
     //将点赞评论隐藏
     $(".item-reply-likelist").hide();
+    /**
+     * zhangzhenfei 批阅：
+     * 这一部分点击回复隐藏其他回复框，其实里面这个循环是为了把不是点击的那个回复框隐藏，
+     * 不需要那么麻烦，这种循环查找很影响性能，直接把所有回复框隐藏了，再使用动画直接显示出来就可以了, 一行代码搞定
+     * @example
+     * $(".item-reply-likelist").hide();
+     */
     //点击评论按钮出现 点赞/评论,且只显示一个
     $(".item-ft").on('click', '.item-reply-btn', function (e) {
-        // 直接先隐藏全部
         curlikelist = $(this).siblings(".item-reply-likelist");
+        // $(".item-reply-likelist").hide(); 批阅example 下面index for代码可以不要了
         var index = curlikelist.index(".item-reply-likelist");
         //遍历隐藏不是当前选项的选项卡
         for (var i = 0, len = $(".item-reply-likelist").length; i < len; i++) {
@@ -236,8 +278,10 @@ function bindEvent() {
         return false;
     })
     /**
+     * zhangzhenfei 批阅：
      * 相同的jquery实例可以用变量缓存起来，提高程序性能
-     * $(".item-ft"）$(this)
+     * @example
+     * var $itemFt = $(".item-ft"）, $this = $(this)
      */
     //点击评论按钮出现评论栏
     $(".item-ft").on('click', '.item-reply-likelist-comment', function () {
@@ -249,6 +293,11 @@ function bindEvent() {
     $(".item-ft").on('click', '.item-reply-likelist-like', function () {
     })
     //点赞toggle
+    /**
+     * zhangzhenfei 批阅：
+     * 1. 不要出现无意义变量定义，a是什么意思呢，还得通过阅读代码理解
+     * 2. 原型扩展方法toggle需要传递两个参数，直接使用匿名函数导致方法体过长，可以考虑抽取定义两个方法
+     */
     var a = '<i>，</i><a class="reply-who" href="#">' + userName + '</a>';
     $(".item-reply-likelist-like").toggle(function () {
         $(this).text("取消");
@@ -277,17 +326,47 @@ function bindEvent() {
                 //如果只有自己点赞，将整个点赞节点删除
                 $(this).parents('.item-right').find('.reply-like').remove();
             } else {
+                /**
+                 * zhangzhenfei 批阅：
+                 * 这里有bug，last-child选择所有父级元素下的最后一个子元素，a是最后一个子元素可以选择的到，
+                 * 每次删除，直接删除后面两个元素就对了
+                 * 另外jquery使用这种串联的方法，当执行到.children("a:last-child").remove()表达式的时候，
+                 * 其实当前jquery上下文已经是被删除那个元素了,有几种解决方式，推荐使用end()回到上一次的jquery上下文对象
+                 * @example
+                 *  $(this).parents('.item-right').find('.reply-like')
+                 *   .children(":last-child").remove().end()
+                 *   .children(":last-child").remove();
+                 */
                 //如果有其他人点赞，只删除自己的
                 $(this).parents('.item-right').find('.reply-like')
                     .children("a:last-child").remove()
                     .children("i:last-child").remove();
             }
-
+            /**
+             * zhangzhenfei 批阅：相同的方法可以抽取为一个公用方法，增强代码健壮性
+             * @example
+             * const widthAnimate = $obj => {
+             *  $obj.animate({
+             *   width: "toggle",
+             *   height: "36px"
+             *  }, 300);
+             * }
+             * $(this).parent('.item-reply-likelist').widthAnimate(); // call
+             */
             $(this).parent('.item-reply-likelist').animate({
                 width: "toggle",
                 height: "36px"
             }, 300);
         })
+    /**
+     * zhangzhenfei 批阅：
+     * 1. 上面方法缺少分号，要不全部都不加，要不每个语句后面都加上
+     * 2. $windowW 明显和声明$(".page-moments")意义不一样，推荐使用有意义的声明
+     * 3. 变量的声明推荐再方法的开头，不要再后面使用的时候，想到一个定义一个，代码维护性不好
+     * 4. 这里大图点击切换小图，小图点击切换大图，其实都是一张图，应用不同css而已，
+     * 直接对包裹这个img的元素使用jquery的toggleClass就行了，不用写那么多代码的
+     * 5. 每个方法后还是缺少分号，注意了
+     */
     //点击图片toggle
     var $windowW = $(".page-moments");
     //小图点击放大
@@ -330,6 +409,12 @@ function bindEvent() {
     })
     //点击非输入框区隐藏输入框
     //点击其他部分 点赞/评论按钮隐藏
+    /**
+     * zhangzhenfei 批阅：
+     * 这里有个bug，没有排除评论框的时候，会隐藏评论框，应该排除掉
+     * @example
+     * if ((target.className != "moments-comment") && (target.className != "moments-comment-input"))
+     */
     $(window).on('click', function (e) {
         var target = e.target;
         $(".item-reply-likelist").hide();
@@ -344,6 +429,11 @@ function bindEvent() {
         "background", "#ccc"
     )
     $('.moments-comment-input').bind('input propertychange', function () {
+        /**
+         * zhangzhenfei 批阅
+         * 同样的问题，相同的对象可以抽取出来，提高程序性能
+         * $('.moments-comment-button')
+         */
         // 把字符串去掉空格，检查是否为空。
         $str = $.trim($('.moments-comment-input').val());
         if ($str === "") {
@@ -358,12 +448,21 @@ function bindEvent() {
     //#47b111
     $(".moments-comment").on('click', "button", function () {
         var comment = curlikelist.parents(".moments-item").find(".reply-comment");
+        /**
+         * zhangzhenfei 批阅
+         * 代码可优化，增加评论的模板可以抽取出来，然后在用到的地方直接append
+         * var comment = '<div class="comment-item"><a class="reply-who" href="#">' + userName + '</a>：' + $(".moments-comment-input").val() + '</div>'
+         */
         //如果已经有评论，增加一条评论,且输入不能为空
         //若不为空，且已有评论
         if (comment.parents(".reply-zone").find(".comment-item").length > 0) {
             comment.append('<div class="comment-item"><a class="reply-who" href="#">' + userName + '</a>：' + $(".moments-comment-input").val() + '</div>')
 
         } else {
+            /**
+             * zhangzhenfei 批阅
+             * jquery 链式操作推荐换行，提高代码阅读性
+             */
             //若不为空，但是没有评论
             curlikelist.parents(".moments-item").find('.reply-zone').append('<div class="reply-comment"><div class="comment-item"><a class="reply-who" href="#">' + userName + '</a>：' + $(".moments-comment-input").val() + '</div></div>')
         }

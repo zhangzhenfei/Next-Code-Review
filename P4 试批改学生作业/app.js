@@ -198,7 +198,7 @@ function bindEvent() {
     $.fn.toggle = function (fn, fn2) {
         var args = arguments, guid = fn.guid || $.guid++, i = 0,
             toggle = function (event) {
-                var lastToggle = ($._data(this, "lastToggle" + fn.guid) || 0) % i;
+                var lastToggle = ( $._data(this, "lastToggle" + fn.guid) || 0 ) % i;
                 $._data(this, "lastToggle" + fn.guid, lastToggle + 1);
                 event.preventDefault();
                 return args[lastToggle].apply(this, arguments) || false;
@@ -209,9 +209,6 @@ function bindEvent() {
         }
         return this.click(toggle);
     };
-    /**
-     * 事件方法里面应该只处理事件的绑定相关逻辑，以下初始化的方法可以抽出来
-     */
     //添加点赞评论
     $('.item-reply-btn').before("<div class='item-reply-likelist'><span class='item-reply-likelist-like'>点赞</span><span class='item-reply-likelist-comment'>评论</span></div>");
     //添加评论栏
@@ -220,7 +217,6 @@ function bindEvent() {
     $(".item-reply-likelist").hide();
     //点击评论按钮出现 点赞/评论,且只显示一个
     $(".item-ft").on('click', '.item-reply-btn', function (e) {
-        // 直接先隐藏全部
         curlikelist = $(this).siblings(".item-reply-likelist");
         var index = curlikelist.index(".item-reply-likelist");
         //遍历隐藏不是当前选项的选项卡
@@ -235,10 +231,7 @@ function bindEvent() {
         }, 300)
         return false;
     })
-    /**
-     * 相同的jquery实例可以用变量缓存起来，提高程序性能
-     * $(".item-ft"）$(this)
-     */
+
     //点击评论按钮出现评论栏
     $(".item-ft").on('click', '.item-reply-likelist-comment', function () {
         $(this).parent(".item-reply-likelist").animate({
@@ -251,25 +244,25 @@ function bindEvent() {
     //点赞toggle
     var a = '<i>，</i><a class="reply-who" href="#">' + userName + '</a>';
     $(".item-reply-likelist-like").toggle(function () {
-        $(this).text("取消");
-        //如果有人赞过
-        if ($(this).parents('.item-right').find('.reply-like').length == 1) {
-            $(this)
-                .parents('.item-right')
-                .find('.reply-like')
-                .append(a);
-        } else {
-            //如果没人赞过
-            $(this)
-                .parents('.item-right')
-                .find('.reply-zone')
-                .prepend('<div class="reply-like"><i class="icon-like-blue"></i> <a class="reply-who" href="#">' + userName + '</a>')
-        }
-        $(this).parent('.item-reply-likelist').animate({
-            width: "toggle",
-            height: "36px"
-        }, 300);
-    }, //取消点赞
+            $(this).text("取消");
+            //如果有人赞过
+            if ($(this).parents('.item-right').find('.reply-like').length == 1) {
+                $(this)
+                    .parents('.item-right')
+                    .find('.reply-like')
+                    .append(a);
+            } else {
+                //如果没人赞过
+                $(this)
+                    .parents('.item-right')
+                    .find('.reply-zone')
+                    .prepend('<div class="reply-like"><i class="icon-like-blue"></i> <a class="reply-who" href="#">' + userName + '</a>')
+            }
+            $(this).parent('.item-reply-likelist').animate({
+                width: "toggle",
+                height: "36px"
+            }, 300);
+        }, //取消点赞
         function () {
             $(this).text("点赞");
             //暂时用append和remove来模拟
@@ -339,9 +332,9 @@ function bindEvent() {
         }
     });
     // 监听输入框改变
-    $('.moments-comment-button').attr("disabled", true);
+    $('.moments-comment-button').attr("disabled",true);
     $('.moments-comment-button').css(
-        "background", "#ccc"
+        "background","#ccc"
     )
     $('.moments-comment-input').bind('input propertychange', function () {
         // 把字符串去掉空格，检查是否为空。
@@ -355,7 +348,7 @@ function bindEvent() {
             $('.moments-comment-button').css("background", "#47b111");
         }
     });
-    //#47b111
+//#47b111
     $(".moments-comment").on('click', "button", function () {
         var comment = curlikelist.parents(".moments-item").find(".reply-comment");
         //如果已经有评论，增加一条评论,且输入不能为空
