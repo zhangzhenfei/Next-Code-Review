@@ -132,6 +132,10 @@ function replyTpl(replyData) {
     return htmlText.join('');
 }
 /**
+ * zhangzhenfei批阅：
+ * 函数的注释也应该有规范，参数应该使用@params说明类型，定义，建议参考jsDoc规范
+ */
+/**
  * 渲染函数：多张图片
  */
 function multiplePicTpl(pics) {
@@ -245,7 +249,14 @@ function bindEvent() {
     };
     /**
      * zhangzhenfei 批阅：
-     * 事件方法里面应该只处理事件的绑定相关逻辑，以下初始化的方法可以抽出来，作为一个initPage()方法
+     * 1. 事件方法里面应该只处理事件的绑定相关逻辑，以下初始化的方法可以抽出来，作为一个initPage()方法
+     * 2. 不需要写一个方法`$(".item-reply-likelist").hide()`将评论隐藏，再初始化的时候直接使用样式去控制，
+     * 再需要显示的时候再改变其样式显示就可以了
+     * 3. 代码处理字符串的时候里有一些使用双引号，另外一些又使用单引号，代码不规范，推荐优先使用单引号，
+     * 仅在必须的情况下才使用双引号。这不仅能保持代码的一致性、缩小代码文件大小，在创建包含HTML代码的字符串时，这尤其有利
+     * 4. 代码一行的长度过长了，建议参考js标准的规范，一行的代码字符长度控制在80内，过长可以换行显示
+     * @example
+     * var msg = '<li class="info">今天天气很好</li>';
      */
     //添加点赞评论
     $('.item-reply-btn').before("<div class='item-reply-likelist'><span class='item-reply-likelist-like'>点赞</span><span class='item-reply-likelist-comment'>评论</span></div>");
@@ -256,14 +267,14 @@ function bindEvent() {
     /**
      * zhangzhenfei 批阅：
      * 这一部分点击回复隐藏其他回复框，其实里面这个循环是为了把不是点击的那个回复框隐藏，
-     * 不需要那么麻烦，这种循环查找很影响性能，直接把所有回复框隐藏了，再使用动画直接显示出来就可以了, 一行代码搞定
+     * 不需要那么麻烦，这种循环查找很影响性能，直接把所有回复框隐藏了，再使用动画直接将需要显示的回复显示出来就可以了, 一行代码搞定
      * @example
      * $(".item-reply-likelist").hide();
      */
     //点击评论按钮出现 点赞/评论,且只显示一个
     $(".item-ft").on('click', '.item-reply-btn', function (e) {
         curlikelist = $(this).siblings(".item-reply-likelist");
-        // $(".item-reply-likelist").hide(); 批阅example 下面index for代码可以不要了
+        // $(".item-reply-likelist").hide(); 参考批阅example 下面index for代码可以不要了
         var index = curlikelist.index(".item-reply-likelist");
         //遍历隐藏不是当前选项的选项卡
         for (var i = 0, len = $(".item-reply-likelist").length; i < len; i++) {
@@ -279,9 +290,12 @@ function bindEvent() {
     })
     /**
      * zhangzhenfei 批阅：
-     * 相同的jquery实例可以用变量缓存起来，提高程序性能
+     * 1. 相同的jquery实例可以用变量缓存起来，提高程序性能
      * @example
      * var $itemFt = $(".item-ft"）, $this = $(this)
+     * 2. `$(".item-ft").on('click')`这段逻辑代码没实现，
+     * 如果不需要了可以删除掉，防止影响代码阅读性
+     * 3. 所有的语句必须用分号结尾所有的代码块不得使用分号结尾
      */
     //点击评论按钮出现评论栏
     $(".item-ft").on('click', '.item-reply-likelist-comment', function () {
@@ -365,7 +379,6 @@ function bindEvent() {
      * 3. 变量的声明推荐再方法的开头，不要再后面使用的时候，想到一个定义一个，代码维护性不好
      * 4. 这里大图点击切换小图，小图点击切换大图，其实都是一张图，应用不同css而已，
      * 直接对包裹这个img的元素使用jquery的toggleClass就行了，不用写那么多代码的
-     * 5. 每个方法后还是缺少分号，注意了
      */
     //点击图片toggle
     var $windowW = $(".page-moments");
@@ -411,9 +424,11 @@ function bindEvent() {
     //点击其他部分 点赞/评论按钮隐藏
     /**
      * zhangzhenfei 批阅：
-     * 这里有个bug，没有排除评论框的时候，会隐藏评论框，应该排除掉
+     * 1. 这里有个bug，没有排除评论框的时候，会隐藏评论框，应该排除掉
      * @example
      * if ((target.className != "moments-comment") && (target.className != "moments-comment-input"))
+     * 2. 不推荐直接改元素的样式，可以通过增加或减少.class来控制样式
+     * 3. `$('.moments-comment-button')`相同的变量可以存起来，避免jquery再去dom寻找元素初始化，影响性能
      */
     $(window).on('click', function (e) {
         var target = e.target;
@@ -478,6 +493,22 @@ function bindEvent() {
     })
 }
 
+/**
+ * zhangzhenfei 批阅：
+ * 建议：一个js的入口，建议将代码包裹成一个IIFE(Immediately-Invoked Function Expression)，用以创建独立隔绝的定义域。这一举措可防止全局命名空间被污染。
+ * IIFE 还可确保你的代码不会轻易被其它全局命名空间里的代码所修改（i.e. 第三方库，window 引用，被覆盖的未定义的关键字等等）
+ * @example:
+ * (function(log, w, undefined){
+ *  'use strict';
+ * 
+ *  var x = 10,
+ *      y = 100;
+ * 
+ *  // Will output 'true true'
+ *  log((w.x === undefined) + ' ' + (w.y === undefined));
+ * 
+ * }(window.console.log, window));
+ */
 /**
  * 页面入口函数：init
  * 1、根据数据页面内容
