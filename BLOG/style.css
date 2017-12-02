@@ -1,0 +1,158 @@
+body {
+    background: white url("http://coding.imweb.io/img/project/blog/bg.jpg") no-repeat top right fixed;
+}
+
+.page-detail {
+    width: 650px;
+    margin-left: 50px;
+}
+
+.page-detail .page-tt {
+    font-size: 36px;
+    line-height: 2;
+    margin: 30px 0px;
+    color: #188eee;
+}
+
+
+/**
+此处建议直接设置h2的背景色来实现，省略掉这个伪元素
+````css
+.article h2{
+  background: linear-gradient(to right,#188eee 16%,#999 16%) no-repeat left bottom/ 100% 1px;
+}
+````
+*/
+
+.article h2 {
+    font-size: 20px;
+    line-height: 2;
+    margin: 20px 0px;
+}
+
+.article h2::after {
+    content: "";
+    background-image: linear-gradient(to right, #188eee 12%, #999 13%, #999);
+    display: block;
+    height: 1px;
+}
+
+.article ol li {
+    counter-increment: cnt;
+}
+
+.article ol li::before {
+    content: "0" counter(cnt) "/";
+    color: #999;
+    font-family: monospace;
+    margin-right: 10px;
+}
+
+.article p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.8;
+    text-indent: 2em;
+    margin: 10px 0px;
+}
+
+.article img {
+    border: 1px solid #999;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.article .ps {
+    color: #999;
+}
+
+.article .ps a:hover {
+    color: #188eee;
+}
+
+.section-comment {
+    margin-top: 50px;
+    border-top: 3px solid #188eee;
+    padding-top: 30px;
+}
+
+.section-comment .form .f-textarea {
+    display: block;
+    width: 650px;
+    height: 100px;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.section-comment .form .f-textarea:hover {
+    border-color: #ccc;
+}
+
+.section-comment .form .f-btn {
+    color: white;
+    background-color: #188eee;
+    border-radius: 6px;
+    border: 0px;
+    padding: 5px 8px;
+    margin-bottom: 20px;
+}
+
+.section-comment .form .f-btn:hover {
+    background-color: #147de2;
+}
+
+.section-comment .comment-list .comment-item {
+    background-color: #f5f5f5;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+
+/**
+这里阴影样式不太对呢，应该还要加上水平偏移和垂直偏移
+box-shadow: 5px 5px 5px rgba(0,0,0,0.2)
+*/
+
+.f-textarea:hover,
+.comment-item:hover {
+    box-shadow: 0px 0px 5px #ccc;
+}
+
+.comment-hd,
+.comment-ft {
+    font-size: 12px;
+}
+
+.comment-item .item-time {
+    color: #666;
+}
+
+.comment-item .item-user {
+    padding-left: 10px;
+    color: #188eee;
+}
+
+.comment-hd,
+.comment-ft,
+.comment-bd,
+.ft-oper {
+    padding: 5px;
+}
+
+.comment-ft {
+    text-align: right;
+}
+
+.ft-oper {
+    color: #188eee;
+    cursor: pointer;
+}
+
+.item-user:hover,
+.ft-oper:hover {
+    color: #147de2;
+}
